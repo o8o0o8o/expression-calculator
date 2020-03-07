@@ -30,8 +30,8 @@ function addition (trim) {
 
 function subtraction (trim) {
   let result = 0;
-    let left = trim.match(/((\d*\.\d)|(\d))*(?=\-)/);
-    let right = trim.match(/(?<=\-)((\d\.\d)|(\d))*/);
+    let left = trim.match(/((\d*\.\d*e\-\d*)|(\d*\.\d*)|(\d*))(?=\-)/);
+    let right = trim.match(/(?<=\-)((\d*\.\d*e\-\d*)|(\d\.\d)|(\d))*/);
     if (left[0] === '') {
       left[0] = '-' + right[0];
       right = trim.match(/(?<=\-((\d\.\d)|(\d))*)(\-|\+)((\d\.\d)|(\d))*/);
@@ -56,7 +56,6 @@ function brackets (trim) {
   let sub = trim.substring(open + 1, close);
   sub = flow(sub);
   if (sub.indexOf('-') === 0 && (sub.indexOf('+') === -1 && ([...sub.match(/(\-)/g)].length === 1))) {
-    console.log(`${trim.charAt(open - 1)}(${trim.substring(open + 1, close)})`)
     if (trim.charAt(open - 1) === '+') {
       trim = trim.replace(`${trim.charAt(open - 1)}(${trim.substring(open + 1, close)})`, sub);
       return trim;
@@ -69,15 +68,15 @@ function brackets (trim) {
       } else {
         for (let i = open - 1; i >= 0; i--) {
           if (trim.charAt(i) === '+') {
-            trim = trim.substring(0, i - 1) + '-' + trim.substring(i + 1);
+            trim = trim.substring(0, i) + '-' + trim.substring(i + 1);
             break;
           } else if (trim.charAt(i) === '-') {
-            trim = trim.substring(0, i - 1) + '+' + trim.substring(i + 1);
+            trim = trim.substring(0, i) + '+' + trim.substring(i + 1);
             break;
           } else if (trim.charAt(i) === '(') {
-            trim = trim.substring(0, i) + '-' + trim.substring(i);
+            trim = trim.substring(0, i + 1) + '-' + trim.substring(i + 1);
             break;
-          } else if ((i === 0 && trim.indexOf(i) === '(') | i === 0) {
+          } else if ((i === 0 && trim.charAt(i) === '(') | i === 0) {
             trim = '-' + trim;
           }
         }
@@ -145,4 +144,4 @@ function expressionCalculator(expr) {
 
 module.exports =    { expressionCalculator}
 
-//console.log(expressionCalculator(" 72 / 75 + 4 * (  14 * 2 / 57 * 21  ) / 15 "));
+//console.log(expressionCalculator(" 24 - 23 * 17 / (  93 + 52 * 70 * (  6 + 91 / (  (  4 / 39 / 8 * 30  ) / (  22 * 97 * (  32 * 20 * (  82 - 80 * 51 / 89 * 9  ) * 56 + 82  ) * 89  ) - 17 - 17  ) / 29 / 81  )  ) "));
